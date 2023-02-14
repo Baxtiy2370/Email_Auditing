@@ -4,6 +4,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.b.appjwtrealemailauditing.dtos.ApiResponse;
+import uz.b.appjwtrealemailauditing.dtos.LoginDTO;
 import uz.b.appjwtrealemailauditing.dtos.RegisterDTO;
 import uz.b.appjwtrealemailauditing.service.AuthService;
 
@@ -27,6 +28,13 @@ public class AuthController {
     public HttpEntity<?> verifyEmail(@RequestParam String emailCode, @RequestParam String email){
         ApiResponse apiResponse = authService.verifyEmail(emailCode,email);
         return ResponseEntity.status(apiResponse.isSuccess()?201:409).body(apiResponse);
+    }
+
+    @PostMapping("/login")
+    public HttpEntity<?> login(@RequestBody LoginDTO loginDTO){
+        ApiResponse apiResponse = authService.login(loginDTO);
+        return ResponseEntity.status(apiResponse.isSuccess()?200:401).body(apiResponse);
+
     }
 
 }
