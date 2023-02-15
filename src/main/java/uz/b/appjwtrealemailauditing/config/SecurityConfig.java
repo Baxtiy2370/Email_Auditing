@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import uz.b.appjwtrealemailauditing.security.JWTFilter;
 import uz.b.appjwtrealemailauditing.service.AuthService;
 
 import java.util.Properties;
@@ -19,9 +22,11 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthService authService;
+    private final JWTFilter jwtFilter;
 
-    public SecurityConfig(AuthService authService) {
+    public SecurityConfig(AuthService authService, JWTFilter jwtFilter) {
         this.authService = authService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -46,6 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         "/api/auth/login")
                 .permitAll()
                 .anyRequest().authenticated();
+        //birinchi jwtFilter ishlashi haqida buyruq berilyapti
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        //sessinga ushlamasdan ishlash haqida buyruq berishda ishlatilyapti
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
 

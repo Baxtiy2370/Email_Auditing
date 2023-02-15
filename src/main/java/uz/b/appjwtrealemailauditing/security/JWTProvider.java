@@ -27,4 +27,24 @@ public class JWTProvider {
         return token;
 
     }
+
+
+
+    public String getEmailFromToken(String token){
+        try {
+            String email = Jwts
+                    .parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+            return email;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+
+
+
 }
